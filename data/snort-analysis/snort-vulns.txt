@@ -1,0 +1,166 @@
+[1]
+rules/web-client.rules:30:
+
+# alert tcp $EXTERNAL_NET $HTTP_PORTS -> $HOME_NET any (msg:"WEB-CLIENT local resource redirection attempt"; flow:to_client,established; content:"Location|3A|"; nocase; http_header; pcre:"/^Location\x3a(\s*|\s*\r?\n\s+)*URL\s*\x3a/smiH"; metadata:service http; reference:cve,2004-0549; reference:url,www.kb.cert.org/vuls/id/713878; classtype:attempted-user; sid:2577; rev:8;)
+
++ Kleene: (\s*|\s*\r?\n\s+)*
+  - Prefix: LOCATION:
+  - Pumpable: \x0A\x0A
+  - Suffix: (The empty string)
+
+[2]
+rules/web-client.rules:280:
+
+# alert tcp $HOME_NET any -> $EXTERNAL_NET $FILE_DATA_PORTS (msg:"WEB-CLIENT Microsoft multiple product toStaticHTML XSS attempt"; flow:to_server,established; content:"<style"; fast_pattern:only; http_client_body; pcre:"/<\s*style\s*>\s*\w+\s*\{\s*(\w+|\w+-\w+)\s*\:\s*\w+\s*\(.*?(\s*\x27\s*|\s*\&\#39\;\s*|\s*\&\#x27\;\s*|\s*\\u0027\;\s*){1}.*?\)\s*(\s*\x27\s*|\s*\&\#39\;\s*|\s*\&\#x27\;\s*|\s*\\u0027\;\s*){3,}.*?\}|(\s*\x27\s*|\s*\&\#39\;\s*|\s*\&\#x27\;\s*|\s*\\u0027\;\s*){1,}.*?\}\s*(\s*\x27\s*|\s*\&\#39\;\s*|\s*\&\#x27\;\s*|\s*\\u0027\;\s*){3,}/Psmi"; metadata:service http, service imap, service pop3; reference:cve,2012-1858; reference:cve,2012-2520; reference:url,technet.microsoft.com/en-us/security/bulletin/MS12-037; reference:url,technet.microsoft.com/en-us/security/bulletin/MS12-039; reference:url,technet.microsoft.com/en-us/security/bulletin/MS12-050; reference:url,technet.microsoft.com/en-us/security/bulletin/MS12-066; classtype:attempted-user; sid:23137; rev:5;)
+
++ Kleene: (\s*\x27\s*|\s*\&\#39\;\s*|\s*\&\#x27\;\s*|\s*\\u0027\;\s*){3,}
+  - Prefix: <STYLE>9{9:9(')'''
+  - Pumpable: ' '
+  - Suffix: (The empty string)
++ Kleene: (\s*\x27\s*|\s*\&\#39\;\s*|\s*\&\#x27\;\s*|\s*\\u0027\;\s*){1,}
+  - Prefix: '
+  - Pumpable: ' '
+  - Suffix: (The empty string)
++ Kleene: (\s*\x27\s*|\s*\&\#39\;\s*|\s*\&\#x27\;\s*|\s*\\u0027\;\s*){3,}
+  - Prefix: '}'''
+  - Pumpable: ' '
+  - Suffix: (Not available)
+
+[3]
+rules/web-client.rules:281:
+
+# alert tcp $EXTERNAL_NET $FILE_DATA_PORTS -> $HOME_NET any (msg:"WEB-CLIENT Microsoft multiple product toStaticHTML XSS attempt"; flow:to_client,established; file_data; content:"toStaticHTML"; fast_pattern:only; pcre:"/<\s*style\s*>\s*\w+\s*\{\s*(\w+|\w+-\w+)\s*\:\s*\w+\s*\(.*?(\s*\x27\s*|\s*\&\#39\;\s*|\s*\&\#x27\;\s*|\s*\\u0027\;\s*){1}.*?\)\s*(\s*\x27\s*|\s*\&\#39\;\s*|\s*\&\#x27\;\s*|\s*\\u0027\;\s*){3,}.*?\}|(\s*\x27\s*|\s*\&\#39\;\s*|\s*\&\#x27\;\s*|\s*\\u0027\;\s*){1,}.*?\}\s*(\s*\x27\s*|\s*\&\#39\;\s*|\s*\&\#x27\;\s*|\s*\\u0027\;\s*){3,}/smi"; metadata:service http, service imap, service pop3; reference:cve,2012-1858; reference:cve,2012-2520; reference:url,technet.microsoft.com/en-us/security/bulletin/MS12-037; reference:url,technet.microsoft.com/en-us/security/bulletin/MS12-039; reference:url,technet.microsoft.com/en-us/security/bulletin/MS12-050; reference:url,technet.microsoft.com/en-us/security/bulletin/MS12-066; classtype:attempted-user; sid:23136; rev:5;)
+
++ Kleene: (\s*\x27\s*|\s*\&\#39\;\s*|\s*\&\#x27\;\s*|\s*\\u0027\;\s*){3,}
+  - Prefix: <STYLE>9{9:9(')'''
+  - Pumpable: ' '
+  - Suffix: (The empty string)
++ Kleene: (\s*\x27\s*|\s*\&\#39\;\s*|\s*\&\#x27\;\s*|\s*\\u0027\;\s*){1,}
+  - Prefix: '
+  - Pumpable: ' '
+  - Suffix: (The empty string)
++ Kleene: (\s*\x27\s*|\s*\&\#39\;\s*|\s*\&\#x27\;\s*|\s*\\u0027\;\s*){3,}
+  - Prefix: '}'''
+  - Pumpable: ' '
+  - Suffix: (Not available)
+
+[4]
+rules/malware-backdoor.rules:631:
+
+# alert tcp $HOME_NET 18713 -> $EXTERNAL_NET any (msg:"MALWARE-BACKDOOR hatredfriend file manage command"; flow:to_client,established; flowbits:isset,backdoor.HatredFriend.cts; content:"[DRIVE"; nocase; content:"LIST]"; distance:0; nocase; pcre:"/\[DRIVE\s+LIST\]\d(\x00[a-zA-Z]\x3A(\s+\[.*\])?)+/smi"; metadata:policy security-ips drop; reference:url,www.spywareguide.com/product_show.php?id=832; reference:url,www3.ca.com/securityadvisor/pest/pest.aspx?id=453077215; classtype:trojan-activity; sid:6338; rev:5;)
+
++ Kleene: (\x00[a-zA-Z]\x3A(\s+\[.*\])?)+
+  - Prefix: [DRIVE LIST]9\x00Z: []
+  - Pumpable: \x00z: []\x00z: []
+  - Suffix: (Not available)
+
+[5]
+rules/oracle.rules:399:
+
+# alert tcp $EXTERNAL_NET any -> $HOME_NET 1830 (msg:"ORACLE Enterprise Manager Application Server Control POST Parameter Overflow Attempt"; flow:to_server,established; content:"POST "; depth:5; pcre:"/^POST [^\r\n]*?\x3F([^\r\n]*?\x26)*?[^\x3D\r\n]{1025}/Osmi"; metadata:service http; reference:bugtraq,15146; reference:url,www.oracle.com/technology/deploy/security/pdf/cpuoct2005.html; classtype:attempted-admin; sid:4676; rev:9;)
+
++ Kleene: ([^\r\n]*?\x26)*?
+  - Prefix: POST ?
+  - Pumpable: &&
+  - Suffix: (The empty string)
+
+[6]
+rules/oracle.rules:401:
+
+# alert tcp $EXTERNAL_NET any -> $HOME_NET 1830 (msg:"ORACLE Enterprise Manager Application Server Control GET Parameter Overflow Attempt"; flow:to_server,established; content:"GET "; depth:4; pcre:"/^GET [^\r\n]*?\x3F([^\r\n]*?\x26)*?[^\x3D\r\n]{1025}/Osmi"; metadata:service http; reference:bugtraq,15146; reference:url,www.oracle.com/technology/deploy/security/pdf/cpuoct2005.html; classtype:attempted-admin; sid:4677; rev:9;)
+
++ Kleene: ([^\r\n]*?\x26)*?
+  - Prefix: GET ?
+  - Pumpable: &&
+  - Suffix: (The empty string)
+
+[7]
+rules/ftp.rules:77:
+
+# alert tcp $EXTERNAL_NET any -> $HOME_NET 21 (msg:"FTP WZD-FTPD SITE arbitrary command execution attempt"; flow:established,to_server; content:"SITE"; fast_pattern:only; pcre:"/^SITE\s*(\w+\s*)+\x7c/smi"; metadata:service ftp; reference:bugtraq,14935; reference:cve,2005-3081; classtype:attempted-admin; sid:8707; rev:6;)
+
++ Kleene: (\w+\s*)+
+  - Prefix: SITE9
+  - Pumpable: zz
+  - Suffix: (The empty string)
+
+[8] 
+rules/browser-ie.rules:4:
+
+# alert tcp $EXTERNAL_NET $HTTP_PORTS -> $HOME_NET any (msg:"BROWSER-IE Microsoft Internet Explorer Script Action Handler buffer overflow attempt"; flow:to_client,established; file_data; content:"<"; content:"onmousedown"; within:24; nocase; pcre:"/[^>]\w*\s*(on(mouse(over|up|down)|load|click)=([^\n\s>]|\(|\))*\s*){21}/Rmi"; metadata:service http; reference:bugtraq,17131; reference:cve,2006-1245; classtype:attempted-user; sid:17516; rev:9;)
+
+rules/browser-ie.rules:95:
+
+# alert tcp $EXTERNAL_NET $HTTP_PORTS -> $HOME_NET any (msg:"BROWSER-IE Microsoft Internet Explorer Script Action Handler buffer overflow attempt"; flow:to_client,established; file_data; content:"<"; content:"onclick"; within:20; nocase; pcre:"/[^>]\w*\s*(on(mouse(over|up|down)|load|click)=([^\n\s>]|\(|\))*\s*){21}/Rmi"; metadata:service http; reference:bugtraq,17131; reference:cve,2006-1245; classtype:attempted-user; sid:17513; rev:9;)
+
+rules/browser-ie.rules:182:
+
+# alert tcp $EXTERNAL_NET $HTTP_PORTS -> $HOME_NET any (msg:"BROWSER-IE Microsoft Internet Explorer Script Action Handler buffer overflow attempt"; flow:to_client,established; file_data; content:"<"; content:"onmouseup"; within:22; nocase; pcre:"/[^>]\w*\s*(on(mouse(over|up|down)|load|click)=([^\n\s>]|\(|\))*\s*){21}/Rmi"; metadata:service http; reference:bugtraq,17131; reference:cve,2006-1245; classtype:attempted-user; sid:17514; rev:9;)
+
+rules/browser-ie.rules:247:
+
+# alert tcp $EXTERNAL_NET $HTTP_PORTS -> $HOME_NET any (msg:"BROWSER-IE Microsoft Internet Explorer Script Action Handler buffer overflow attempt"; flow:to_client,established; file_data; content:"<"; content:"onload"; within:19; nocase; pcre:"/[^>]\w*\s*(on(mouse(over|up|down)|load|click)=([^\n\s>]|\(|\))*\s*){21}/Rmi"; metadata:service http; reference:bugtraq,17131; reference:cve,2006-1245; classtype:attempted-user; sid:17515; rev:9;)
+
++ Kleene: ([^\n\s>]|\(|\))*
+  - Prefix: =ONMOUSEOVER=
+  - Pumpable: )
+  - Suffix: (The empty string)
++ (more)
+
+[9] 
+rules/web-php.rules:1:
+
+# alert tcp $EXTERNAL_NET any -> $SMTP_SERVERS 25 (msg:"WEB-PHP use-after-free in substr_replace attempt"; flow:to_server,established; file_data; content:"substr_replace("; fast_pattern:only; content:"<?"; pcre:"/substr_replace\((\s*\$\w+\s*,\s*){3,}.*?\)\x3b/smi"; metadata:service smtp; reference:cve,2011-1148; classtype:misc-activity; sid:23793; rev:2;)
+
+rules/web-php.rules:256:
+
+# alert tcp $HOME_NET any -> $EXTERNAL_NET $HTTP_PORTS (msg:"WEB-PHP PHP use-after-free in substr_replace attempt"; flow:to_server,established; content:"substr_replace("; fast_pattern:only; http_client_body; content:"<?"; http_client_body; pcre:"/substr_replace\((\s*\$\w+\s*,\s*){3,}.*?\)\x3b/Psmi"; metadata:service http; reference:cve,2011-1148; classtype:misc-activity; sid:23792; rev:2;)
+
+rules/web-php.rules:257:
+
+# alert tcp $EXTERNAL_NET $FILE_DATA_PORTS -> $HOME_NET any (msg:"WEB-PHP PHP use-after-free in substr_replace attempt"; flow:to_client,established; file_data; content:"substr_replace("; fast_pattern:only; content:"<?"; pcre:"/substr_replace\((\s*\$\w+\s*,\s*){3,}.*?\)\x3b/smi"; metadata:service http, service imap, service pop3; reference:cve,2011-1148; classtype:misc-activity; sid:23791; rev:1;)
+
++ Kleene: (\s*\$\w+\s*,\s*){3,}
+  - Prefix: SUBSTR_REPLACE($9,$9,$9,
+  - Pumpable: $z, $z,
+  - Suffix: (The empty string)
+
+[10]
+rules/deleted.rules:1801:
+
+# alert tcp $EXTERNAL_NET $HTTP_PORTS -> $HOME_NET any (msg:"DELETED WEB-CLIENT Firefox XML parser memory corruption attempt"; flow:to_client,established; content:"<"; pcre:"/(\x3c[a-zA-Z\x5f][a-zA-Z0-9\x5f]*[^\x3e]*[^\x2f]\x3e){50,}/"; pcre:!"/(\x3c\x2f){50,}/"; reference:cve,2009-1232; classtype:attempted-dos; sid:15447; rev:5;)
+
++ Kleene: (\x3c[a-zA-Z\x5f][a-zA-Z0-9\x5f]*[^\x3e]*[^\x2f]\x3e){50,}
+  - Prefix: <Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.><Z.>
+  - Pumpable: <zz>>
+  - Suffix: (Not available)
+
+[11]
+rules/web-misc.rules:484:
+
+# alert tcp $EXTERNAL_NET any -> $HOME_NET [8030,8028,8008,8010] (msg:"WEB-MISC Novell eDirectory SOAP Accept Charset header overflow attempt"; flow:to_server,established; content:"/SOAP"; fast_pattern; nocase; http_uri; content:"Accept-Charset|3A|"; nocase; pcre:"/^Accept\x2dCharset\x3a\s*?([^\x3b\x3d\x2c]{1,36}\s*?[\x2d\x3b\x3d\x2c]\s*?)*[^\x2d\x3b\x2c\x3d\n]{37}/smi"; reference:cve,2008-4479; classtype:attempted-user; sid:14990; rev:4;)
+
++ Kleene: ([^\x3b\x3d\x2c]{1,36}\s*?[\x2d\x3b\x3d\x2c]\s*?)*
+  - Prefix: ACCEPT-CHARSET:
+  - Pumpable: ~ -
+  - Suffix: (The empty string)
+
+[12]
+rules/exploit.rules:217:
+
+# alert udp $EXTERNAL_NET any -> $HOME_NET 49152:65535 (msg:"EXPLOIT Apple mDNSresponder excessive HTTP headers"; flow:to_client; content:"HTTP"; depth:16; pcre:"/^.*HTTP.*\r\n(.+\x3a\s+.+\r\n){31,}/"; reference:bugtraq,25159; reference:cve,2007-3744; classtype:attempted-admin; sid:12357; rev:3;)
+
++ Kleene: (.+\x3a\s+.+\r\n){31,}
+    - Prefix: HTTP\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A~: ~\x0D\x0A
+    - Pumpable: ~:\x0A \x0D\x0D\x0A
+    - Suffix: (Not available)
+
+[13]
+rules/malware-cnc.rules:1143:
+
+# alert tcp $HOME_NET any -> $EXTERNAL_NET $HTTP_PORTS (msg:"MALWARE-CNC Win.Trojan.Spy variant outbound communication"; flow:to_server,established; content:"User-Agent"; http_header; content:"Forthgoer"; within:15; http_header; pcre:"/(\&d[0-9]{2}=.*?)+/Usi"; content:"GET"; http_method; metadata:impact_flag red, service http; reference:url,www.virustotal.com/file/0377724b0060a6a92795d43f688d8f4fc5d1be2ac114fb5427035d8490a3e0e5/analysis; classtype:trojan-activity; sid:24350; rev:1;)
+
++ Kleene: (\&d[0-9]{2}=.*?)+
+  - Prefix: &D99=
+  - Pumpable: &d99=&d99=
+  - Suffix: (Not available)

@@ -1,0 +1,2 @@
+- Fixed a bug in the implementation of prefix-matching semantics
+- Removed partial support for non-ascii support (too many issues when it comes to validation)

@@ -1,0 +1,38 @@
+# Vulnerable
+/(a|ab|b)*c|.*/
+
+# No suffix
+/.*|(a|ab|b)*c/
+
+# Empty suffix
+/.*c|(a|ab|b)*c/
+
+# No suffix
+/.*b|(a|ab|b)*c/
+
+# Phi2 < Phi3
+/(.*b|(a|ab|b)*c)d/
+
+# Unroll Kleene star
+/a.*|(b|a|ab)*c/
+
+# X1 Choice
+/c.*|(c|d)(a|b|ab)*e/
+
+# Pumpable choice
+/d.*|((c|d)(a|a))*b/
+
+# Unroll c*
+/a.*|(c*a(b|b))*d/
+
+# Only b is pumpable
+/(a|a|b|b)*(a.*|c)/
+
+# Unroll c*
+/(a|b).*|c*(a|b|ab)*d/
+
+# Unroll selective
+/(ab|a*b|aab.*)*$/
+
+# lexing error
+\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))

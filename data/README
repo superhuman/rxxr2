@@ -1,0 +1,7 @@
++ input/
+  - input data-sets (Snort, RegexLib)
++ snort-analysis/
+  - an analysis of the vulnerabilities found in Snort
++ validate/
+  - RXXR results for Snort and RegexLib
+  - scripts for validating Snort and RegexLib vulnerabilities

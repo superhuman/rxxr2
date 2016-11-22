@@ -1,0 +1,8 @@
++ rxxr-regexlib-vulns.txt, rxxr-snort-vulns.txt
+  - RXXR result logs for RegexLib and Snort
+  - These can be re-produce by running RXXR (scan.bin -i <file>) agains the input data-sets in data/input
++ regexlib-vulns-validate.py, snort-vulns-validate.py
+  - Scripts that validate RegexLib, Snort vulnerabilities on python
+  - Tested on Python 2.7.3
+  - Execute without any arguments to validate all the vulnerabilities (uses a hard-coded number of pumpings)
+  - Use --stress <id> to exercise a particular vulnerability and observe the exponential growth in runtime

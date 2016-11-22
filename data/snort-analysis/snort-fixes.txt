@@ -1,0 +1,97 @@
+[1] rules/oracle.rules:399:
+
++ Original rule:
+
+# alert tcp $EXTERNAL_NET any -> $HOME_NET 1830 (msg:"ORACLE Enterprise Manager Application Server Control POST Parameter Overflow Attempt"; flow:to_server,established; content:"POST "; depth:5; pcre:"/^POST [^\r\n]*?\x3F([^\r\n]*?\x26)*?[^\x3D\r\n]{1025}/Osmi"; metadata:service http; reference:bugtraq,15146; reference:url,www.oracle.com/technology/deploy/security/pdf/cpuoct2005.html; classtype:attempted-admin; sid:4676; rev:9;)
+
++ Modified for testing:
+
+(Same as original, uncommented)
+
++ Attack spec:
+
+Kleene: ([^\r\n]*?\x26)*?
+Prefix: POST ?
+Pumpable: =&&
+Suffix: (The empty string)
+
++ Observation:
+
+Snort crashes in IPS mode.
+
++ Fix:
+
+/^POST [^\r\n]*?\x3F([^\r\n\x26]+?\x26)*?[^\x3D\r\n]{1025}/Osmi
+
+
+
+[2] rules/oracle.rules:401:
+
++ Original rule:
+
+# alert tcp $EXTERNAL_NET any -> $HOME_NET 1830 (msg:"ORACLE Enterprise Manager Application Server Control GET Parameter Overflow Attempt"; flow:to_server,established; content:"GET "; depth:4; pcre:"/^GET [^\r\n]*?\x3F([^\r\n]*?\x26)*?[^\x3D\r\n]{1025}/Osmi"; metadata:service http; reference:bugtraq,15146; reference:url,www.oracle.com/technology/deploy/security/pdf/cpuoct2005.html; classtype:attempted-admin; sid:4677; rev:9;)
+
++ Modified for testing:
+
+(Same as original, uncommented)
+
++ Attack spec:
+
+Kleene: ([^\r\n]*?\x26)*?
+Prefix: GET ?
+Pumpable: =&&
+Suffix: (The empty string)
+
++ Observation:
+
+Snort crashes in IPS mode.
+
++ Fix:
+
+/^GET [^\r\n]*?\x3F([^\r\n\x26]+?\x26)*?[^\x3D\r\n]{1025}/Osmi
+
+
+
+[3] rules/web-client.rules:30
+
++ Original rule:
+
+# alert tcp $EXTERNAL_NET $HTTP_PORTS -> $HOME_NET any (msg:"WEB-CLIENT local resource redirection attempt"; flow:to_client,established; content:"Location|3A|"; nocase; http_header; pcre:"/^Location\x3a(\s*|\s*\r?\n\s+)*URL\s*\x3a/smiH"; metadata:service http; reference:cve,2004-0549; reference:url,www.kb.cert.org/vuls/id/713878; classtype:attempted-user; sid:2577; rev:8;)
+
++ Modified for testing:
+
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"WEB-CLIENT local resource redirection attempt"; flow:to_server,established; content:"Location|3A|"; nocase; pcre:"/^Location\x3a(\s*|\s*\r?\n\s+)*URL\s*\x3a/smi"; metadata:service http; reference:cve,2004-0549; reference:url,www.kb.cert.org/vuls/id/713878; classtype:attempted-user; sid:2577; rev:8;)
+
++ Attack spec:
+
+Kleene: (\s*|\s*\r?\n\s+)*
+Prefix: LOCATION:
+Pumpable: \x0A\x0A
+Suffix: (The empty string)
+
++ Observation:
+
+Snort doesn't seem to be affected at all.
+
+
+
+[4] rules/ftp.rules:77:
+
++ Original rule:
+
+# alert tcp $EXTERNAL_NET any -> $HOME_NET 21 (msg:"FTP WZD-FTPD SITE arbitrary command execution attempt"; flow:established,to_server; content:"SITE"; fast_pattern:only; pcre:"/^SITE\s*(\w+\s*)+\x7c/smi"; metadata:service ftp; reference:bugtraq,14935; reference:cve,2005-3081; classtype:attempted-admin; sid:8707; rev:6;)
+
++ Modified for testing:
+
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"FTP WZD-FTPD SITE arbitrary command execution attempt"; flow:established,to_server; content:"SITE"; pcre:"/^SITE\s*(\w+\s*)+\x7c/smi"; reference:bugtraq,14935; reference:cve,2005-3081; classtype:attempted-admin; sid:8707; rev:6;)
+
++ Attack spec:
+
+- Kleene: (\w+\s*)+
+- Prefix: SITE9
+- Pumpable: zz
+- Suffix: (The empty string)
+
++ Observation:
+
+Snort doesn't seem to be affected at all. However, the vulnerability can be verified in PCRE. 
