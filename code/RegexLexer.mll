@@ -81,8 +81,9 @@ let hex_literal = escape_char 'x' ['0' - '9' 'a' - 'f' 'A' - 'F'] ['0' - '9' 'a'
 let oct_literal = escape_char '0' (['0' - '7'] | ['0' - '7']['0' - '7'] | ['0' - '3']['0' - '7']['0' - '7'])
 let ctrl_literal = escape_char 'c' ['?' '@' - '_']
 let nmd_literal = escape_char ['t' 'n' 'r' 'f' 'a' 'e']
+let unicode_literal = escape_char 'u' ['0' - '9' 'a' - 'f' 'A' - 'F'] ['0' - '9' 'a' - 'f' 'A' - 'F'] ['0' - '9' 'a' - 'f' 'A' - 'F'] ['0' - '9' 'a' - 'f' 'A' - 'F']
 
-let encoded_literals = hex_literal | oct_literal | ctrl_literal | nmd_literal
+let encoded_literals = hex_literal | oct_literal | ctrl_literal | nmd_literal | unicode_literal
 
 let normal_literal = encoded_literals | [^'\\']
 let chead_literal = encoded_literals | [^'[' '\\']
