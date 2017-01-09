@@ -60,6 +60,7 @@ Hashtbl.add flg_map 'i' ParsingData.flg_no_case;;
 Hashtbl.add flg_map 'm' ParsingData.flg_multiline;;
 Hashtbl.add flg_map 's' ParsingData.flg_dotall;;
 (* greedy / reluctant quantifiers don't matter for ReDoS *)
+Hashtbl.add flg_map 'g' 0;;
 Hashtbl.add flg_map 'G' 0;;
 (* snort specific modifiers that we don't care about *)
 Hashtbl.add flg_map 'R' 0;;

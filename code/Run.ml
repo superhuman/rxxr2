@@ -109,6 +109,7 @@ let batch_scan fname zlim =
   let s_total = ref 0 in
   let rec scan () = match RegexScanner.next rs with
     |RegexScanner.Eof ->
+      Printf.printf "---------------------------\n";
       Printf.printf ">> TOTAL: %d\n" !c_total;
       Printf.printf ">> PARSED: %d\n" !c_parsed;
       Printf.printf ">> MAX NFA SIZE: %d\n" !s_max;
