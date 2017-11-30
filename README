@@ -2,6 +2,46 @@ This is a clone of http://www.cs.bham.ac.uk/~hxt/research/rxxr2/ as of
 2016-11-22 My hope is to add support for the few features missing to run the
 code on all the regexes in the Superhuman email client. PR's welcome :).
 
+# Installation
+
+Install OCaml
+
+```
+brew install ocaml
+```
+
+Clone this REPO:
+
+```
+git clone https://github.com/ConradIrwin/rxxr2
+```
+
+Build the code
+
+```
+cd rxxr2/code
+./build.sh
+```
+
+Run the script
+
+```
+./code/scan.bin -i data/input/snort-raw.txt
+```
+
+If you want to validate a regular expression add it to a file:
+
+```
+echo '/([0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$/' > input.txt
+./code/scan.bin -i input.txt
+```
+
+If your regular expression is vulnerable to DoS attacks, it will print out: `VULNERABLE: YES`,
+if your regular expression is not, it will print out: `VULNERABLE: NO`
+
+For more information on regular expression denial of service, see [OWASP](https://www.owasp.org/index.php/Regular_expression_Denial_of_Service_-_ReDoS).
+
+# Layout
 
 + code/
   - source code for RXXR
