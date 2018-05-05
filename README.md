@@ -6,8 +6,17 @@ code on all the regexes in the Superhuman email client. PR's welcome :).
 
 Install OCaml
 
+## macOS
+
 ```
 brew install ocaml
+```
+
+## GNU/Linux
+
+```
+sudo dnf install ocaml # Fedora
+sudo apt-get install ocaml # Debian/Ubuntu
 ```
 
 Clone this REPO:
