@@ -1,7 +1,6 @@
 (* © Copyright University of Birmingham, UK *)
 
 {
-open ParsingData
 open PatternParser
 
 (* different states of the regex lexer *)
@@ -11,7 +10,7 @@ and rlphase = REGEX_BODY | CLS_HEAD | CLS_BODY | MODS_LIST | QUOTE;;
 (* switch between different lexing functions based on the current state / token *)
 let create_regex_lexer_decorator () =
   let state = { rl_phase = REGEX_BODY } in
-  let rec lex_regex_stateful lbuf = match state.rl_phase with
+  let lex_regex_stateful lbuf = match state.rl_phase with
     REGEX_BODY ->
       begin
         let tk = RegexLexer.tk_normal lbuf in

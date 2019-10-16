@@ -1,6 +1,5 @@
 (* © Copyright University of Birmingham, UK *)
 
-open Common
 open Triple
 
 type t = {

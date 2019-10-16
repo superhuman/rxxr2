@@ -1,7 +1,6 @@
 (* © Copyright University of Birmingham, UK *)
 
 open Common
-open Nfa
 
 (* internal representation - an NFA state pair and a phi *)
 type t = (int * int) * Phi.t;;
@@ -9,7 +8,7 @@ type t = (int * int) * Phi.t;;
 module TripleSet = Set.Make (
   struct
     type t = (int * int) * Phi.t;;
-    let compare (i1, p1) (i2, p2) = let c = Pervasives.compare i1 i2 in if c == 0 then Phi.compare p1 p2 else c;; 
+    let compare (i1, p1) (i2, p2) = let c = Stdlib.compare i1 i2 in if c == 0 then Phi.compare p1 p2 else c;; 
   end);;
 
 let make i j p = ((i, j), p);;

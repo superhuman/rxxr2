@@ -71,9 +71,9 @@ let search_exhaustive nfa =
   (* function for searching z *)
   let search_z (x, y, y2p) kont =
     let zs = ZAnalyser.init (nfa, Word.append x y, y2p) in
-    let rec explore () = match ZAnalyser.next zs with
+    let explore () = match ZAnalyser.next zs with
       |None -> kont () (* exhausted, invoke continuation *)
-      |Some (z, zp) -> Some (x, y, z) in
+      |Some (z, _zp) -> Some (x, y, z) in
     explore () in
   (* function for searching y2 *)
   let search_y2 ik (x, y1, y1_tpl) xp kont =
@@ -129,11 +129,11 @@ let search_optimized nfa slim =
   (* function for searching z *)
   let search_z ik (x, y, y2p) kont =
     let zs = ZAnalyser.init (nfa, Word.append x y, y2p) in
-    let rec explore () = match ZAnalyser.next zs with
+    let explore () = match ZAnalyser.next zs with
       |None -> 
         flgs := Flags.union (ZAnalyser.flags zs) !flgs;
         kont () (* exhausted, invoke continuation *)
-      |Some (z, zp) -> (!flgs, kpumpable, Some (ik, x, y, z)) in
+      |Some (z, _zp) -> (!flgs, kpumpable, Some (ik, x, y, z)) in
     explore () in
   (* function for searching y2 *)
   let search_y2 ik (x, y1, y1_tpl) xp kont =

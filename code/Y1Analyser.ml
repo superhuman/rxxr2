@@ -1,7 +1,6 @@
 (* © Copyright University of Birmingham, UK *)
 
 open Common
-open Phi
 open Product
 open Triple
 

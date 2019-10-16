@@ -161,7 +161,7 @@ let rec compile r sv pv next kont flags = match (fst r) with
     pv.(next) <- (r_spos r, r_spos r);
     sv.(next) <- BeginCap (i, kont);
     (next - 1, next)
-  |Group (MODS, m_on, m_off, _) ->
+  |Group (MODS, _m_on, _m_off, _) ->
     (next, kont)
   |Group (NOCAP, m_on, m_off, r1) ->
     let flags2 = (flags lor m_on) land (lnot m_off) in
@@ -200,9 +200,9 @@ let rec compile r sv pv next kont flags = match (fst r) with
 let make (r, flags) =
   let _ = decorate_regex r flags in 
   let state_count = (snd r).scount + 1 in (* + 1 for the final state *)
-  let sv = Array.create state_count End in
-  let tv = Array.create state_count None in
-  let pv = Array.create state_count (r_epos r, r_epos r) in
+  let sv = Array.make state_count End in
+  let tv = Array.make state_count None in
+  let pv = Array.make state_count (r_epos r, r_epos r) in
   let (_, kont) = compile r sv pv (state_count - 2) (state_count - 1) flags in
   {states = sv; transitions = tv; positions = pv; root = kont};;
 

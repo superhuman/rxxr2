@@ -1,7 +1,5 @@
 (* © Copyright University of Birmingham, UK *)
 
-open ParsingData
-
 (* different states of the pattern lexer *)
 type plstate = {mutable pl_phase : plphase}
 and plphase = PATTERN | MODS;;

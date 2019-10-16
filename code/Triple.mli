@@ -1,8 +1,5 @@
 (* © Copyright University of Birmingham, UK *)
 
-open Common
-open Phi
-
 (* internal representation of a triple *)
 type t;;
 
