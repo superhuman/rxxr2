@@ -1,0 +1,26 @@
+{
+  "name": "rxxr2",
+  "version": "1.0.0",
+  "description": "A javascript port or rxxr2",
+  "main": "index.js",
+  "repository": "https://github.com/superhuman/rxxr2",
+  "author": "Conrad Irwin <conrad@superhuman.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "^12.12.12",
+    "chai-string": "^1.5.0",
+    "regexp-to-ast": "^0.4.0",
+    "typescript": "^3.7.2"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.5",
+    "@types/mocha": "^5.2.7",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.2",
+    "source-map-support": "^0.5.16",
+    "ts-node": "^8.5.2"
+  },
+  "scripts": {
+    "test": "mocha --watch test/*.js"
+  }
+}

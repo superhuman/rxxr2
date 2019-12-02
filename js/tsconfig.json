@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "noFallthroughCasesInSwitch": true,
+        "sourceMap": true,
+        "target": "esnext",
+        "module": "umd",
+        "moduleResolution": "node",
+        "lib": ["es2019"],
+        "types": ["node", "mocha"]
+    },
+    "include": [
+      "*.ts",
+      "src/*.ts",
+      "test/*.ts"
+    ]
+}
