@@ -1,0 +1,16 @@
+timeout: 1800s
+steps:
+# Build the container image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/regex-rip/rxxr2', '.']
+  timeout: 1800s
+# Push the container image to Container Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/regex-rip/rxxr2']
+  timeout: 1800s
+# Deploy container image to Cloud Run
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['beta', 'run', 'deploy', 'api-regex-rip', '--image', 'gcr.io/regex-rip/rxxr2', '--region', 'us-central1', '--platform', 'managed', '--allow-unauthenticated']
+  timeout: 1800s
+images:
+       - gcr.io/regex-rip/rxxr2
