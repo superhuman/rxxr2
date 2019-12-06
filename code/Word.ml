@@ -24,7 +24,7 @@ let tail w = match w with
 let suffix w flen =
   let tlen = length w in
   let rec suffix w i = match (w, i) with
-    |(w, i) when i == flen -> []
+    |(_, i) when i == flen -> []
     |(h :: t, i) -> h :: suffix t (i - 1)
     |_ -> [] in
   if flen >= tlen then [] else suffix w tlen;;

@@ -1,7 +1,5 @@
 (* © Copyright University of Birmingham, UK *)
 
-open Common
-
 (* internal representation of the analyser *)
 type t;;
 

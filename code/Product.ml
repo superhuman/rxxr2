@@ -10,7 +10,7 @@ module ProductSet = Set.Make (
   struct
     type t = (int * Phi.t);;
     let compare (i1, p1) (i2, p2) =
-      let ic = Pervasives.compare i1 i2 in
+      let ic = Stdlib.compare i1 i2 in
       if ic == 0 then Phi.compare p1 p2 else ic;;
   end);;
 

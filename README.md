@@ -19,6 +19,12 @@ sudo dnf install ocaml # Fedora
 sudo apt-get install ocaml # Debian/Ubuntu
 ```
 
+Install OPAM:
+
+```
+sh <(curl -sL https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh)
+```
+
 Clone this REPO:
 
 ```
@@ -49,6 +55,41 @@ If your regular expression is vulnerable to DoS attacks, it will print out: `VUL
 if your regular expression is not, it will print out: `VULNERABLE: NO`
 
 For more information on regular expression denial of service, see [OWASP](https://www.owasp.org/index.php/Regular_expression_Denial_of_Service_-_ReDoS).
+
+There is also an included web-server, you can build with:
+
+```
+cd rxxr2/code
+dune build http.exe  # even on non-windows platforms, this command works
+```
+
+And then run the output binary:
+
+```
+PORT=8080 ./_build/default/http.exe
+```
+
+It will listen on port 8080 and you make requests to it like:
+
+```
+curl -X POST http://localhost:8080/check --data '{"regexes":["a\\1","[gh](a|b|ab)*c"]}'
+{
+  "results": [
+    {
+      "input": "a.*",
+      "result": "ok"
+    },
+    {
+      "input": "[gh](a|b|ab)*c",
+      "result": "vulnerable",
+      "kleene": "(a|b|ab)*",
+      "prefix": "g",
+      "pumpable": "ab",
+      "suffix": ""
+    }
+  ]
+}
+```
 
 # Layout
 

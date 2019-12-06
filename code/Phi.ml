@@ -110,7 +110,7 @@ let evolve (nfa, w, p) iopt =
 
 (* utility method for checking if the given character class includes the target character *)
 let rec matches cls c = match cls with
-  |(u, v) :: t when u <= c && c <= v -> true
+  |(u, v) :: _ when u <= c && c <= v -> true
   |_ :: t -> matches t c
   |[] -> false;;
 

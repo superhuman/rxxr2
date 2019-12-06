@@ -69,7 +69,7 @@ let print_flags f =
   let s = if Flags.is_interrupted f then "INTERRUPTED, " else "" in
   if Flags.is_pruned f then Printf.sprintf "%sPRUNED" s else s;;
 
-let std_scan slim =
+let std_scan _ =
   while true do
     let lexbuf = Lexing.from_channel stdin in
     let p = ParsingMain.parse_pattern lexbuf in
@@ -214,7 +214,7 @@ let spec = Arg.align [("-slim", Arg.Int (fun i -> if i > 1 then slim := i), "<n>
             ("-q", Arg.Unit (fun () -> quiet_mode := true), " Quiet mode (hide parsing erros)");
             ("-snort", Arg.Unit (fun () -> snort_mode := true), " Snort rule processing mode (use -i to specify the rules file / directory)")] in
 let message = "USAGE: run.bin [-slim n] [-i file] [-snort]" in
-let _ = Arg.parse spec (fun s -> ()) message in
+let _ = Arg.parse spec (fun _ -> ()) message in
 match !input_file with
   |Some f when !snort_mode -> snort_scan f !slim !quiet_mode 
   |Some f -> batch_scan f !slim
