@@ -1,0 +1,35 @@
+{
+  "name": "regex.rip",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/superhuman/rxxr2",
+  "author": "Conrad Irwin <conrad@superhuman.com>",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "start": "webpack-dev-server"
+  },
+  "dependencies": {
+    "@types/classnames": "^2.2.9",
+    "@types/react": "^16.9.15",
+    "@types/react-dom": "^16.9.4",
+    "@types/react-textarea-autosize": "^4.3.5",
+    "classnames": "^2.2.6",
+    "css-loader": "^3.2.1",
+    "html-webpack-plugin": "^3.2.0",
+    "node-sass": "^4.13.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-textarea-autosize": "^7.1.2",
+    "sass-loader": "^8.0.0",
+    "style-loader": "^1.0.1",
+    "ts-loader": "^6.2.1",
+    "tslint": "^5.20.1",
+    "tslint-config-standard": "^9.0.0",
+    "typescript": "^3.7.3",
+    "url-loader": "^3.0.0",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.9.0"
+  }
+}

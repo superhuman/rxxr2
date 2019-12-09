@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "noFallthroughCasesInSwitch": true,
+        "sourceMap": true,
+        "target": "es6",
+        "module": "commonjs",
+        "types": ["react", "react-dom", "react-textarea-autosize", "classnames"],
+        "lib": ["es2017", "dom"],
+        "jsx": "react",
+        "allowJs": true
+    }
+}
