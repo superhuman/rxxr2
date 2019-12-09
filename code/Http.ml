@@ -4,7 +4,13 @@ open Cohttp_lwt_unix
 open Cohttp
 open Yojson
 
+let cors_headers =
+  Header.add (
+    Header.add (Header.init ()) "Access-Control-Allow-Origin" "*"
+  ) "Access-Control-Allow-Method" "POST"
+
 let check_regex r =
+  print_endline(Basic.to_string(`String r)) ;
   let lexbuf =  Lexing.from_string (r ^ "\n") in
   try
     let p = ParsingMain.parse_pattern lexbuf in
@@ -63,7 +69,9 @@ let callback _conn req body =
   else
     body |> Cohttp_lwt.Body.to_string
     >|= check_handler
-    >>= (fun (status, body) -> Server.respond_string ~status ~body ())
+    >>= (fun (status, body) ->
+      let headers = cors_headers in
+       Server.respond_string ~headers ~status ~body ())
 
 let port = try Sys.getenv "PORT" |> int_of_string
            with Not_found -> 8181
