@@ -1,5 +1,14 @@
 timeout: 1800s
 steps:
+- name 'gcr.io/cloud-builders/yarn'
+  args: ['install']
+  dir: 'regex.rip'
+- name 'gcr.io/cloud-builders/yarn'
+  args: ['build']
+  dir: 'regex.rip'
+- name 'gcr.io/cloud-builders/gsutil'
+  args: ['cp', '-r', '.', 'gs://regex.rip']
+  dir: 'regex.rip/build'
 # Build the container image
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'gcr.io/regex-rip/rxxr2', '.']

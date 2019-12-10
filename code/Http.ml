@@ -34,7 +34,7 @@ let check_regex r =
   | ParsingData.InvalidBackreference e ->
     `Assoc [
       ("input", `String r);
-      ("result", `String "error2");
+      ("result", `String "error");
       ("error", `String (Printf.sprintf "invalid backreference \\%i" e))
     ]
 
