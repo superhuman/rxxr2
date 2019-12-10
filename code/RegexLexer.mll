@@ -24,12 +24,12 @@ let resolve_class cls_str = match cls_str with
   |_ -> raise ParsingData.InternalLexingError;;
 
 (* disallow non-ascii characters *)
-let resolve_char c spos =
-  if (c < '\x00' || c > '\x7f') then raise (ParsingData.NonAsciiInput(spos, c)) else  c;;
+let resolve_char c _ =
+  if (c < '\x00' || c > '\x7f') then '\xff' else  c;;
 
 (* handle character escapes and numerals *)
 let resolve_literal lit_str spos =
-  let lit_switch = Str.regexp "[\\]x\\|[\\]0\\|[\\]c\\|[\\].\\|." in
+  let lit_switch = Str.regexp "[\\]x\\|[\\]u|[\\]0\\|[\\]c\\|[\\].\\|." in
   let _ = if not (Str.string_match lit_switch lit_str 0) then
             raise ParsingData.InternalLexingError in
   let lit_head = Str.matched_string lit_str in
@@ -37,6 +37,9 @@ let resolve_literal lit_str spos =
     "\\x" -> 
       let code = int_of_string (Str.replace_first lit_switch "0x" lit_str) in
       Char.chr code
+    |"\\u" ->
+      let code = int_of_string (Str.replace_first lit_switch "0x" lit_str) in
+        Char.chr (if code > 0xff then 0xff else code)
     |"\\0" -> 
       let code = int_of_string (Str.replace_first lit_switch "0o" lit_str) in
       Char.chr code
@@ -87,7 +90,7 @@ let encoded_literals = hex_literal | oct_literal | ctrl_literal | nmd_literal | 
 
 let normal_literal = encoded_literals | [^'\\']
 let chead_literal = encoded_literals | [^'[' '\\']
-let cbody_literal = encoded_literals | [^'[' ']' '\\']
+let cbody_literal = encoded_literals | [^ ']' '\\']
 
 let plain_chead_u = [^'[' '\n' '\\']
 let plain_chead_v = [^'[' ']' '\n' '\\']

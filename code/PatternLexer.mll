@@ -61,6 +61,8 @@ Hashtbl.add flg_map 's' ParsingData.flg_dotall;;
 (* greedy / reluctant quantifiers don't matter for ReDoS *)
 Hashtbl.add flg_map 'G' 0;;
 (* snort specific modifiers that we don't care about *)
+Hashtbl.add flg_map 'g' 0;;
+Hashtbl.add flg_map 'y' 0;;
 Hashtbl.add flg_map 'R' 0;;
 Hashtbl.add flg_map 'U' 0;;
 Hashtbl.add flg_map 'P' 0;;
