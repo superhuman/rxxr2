@@ -1,12 +1,17 @@
 timeout: 1800s
 steps:
-- name 'gcr.io/cloud-builders/yarn'
+# Build the container image
+- name: 'node:11.15.0'
+  entrypoint: 'yarn'
   args: ['install']
   dir: 'regex.rip'
-- name 'gcr.io/cloud-builders/yarn'
+# Build the container image
+- name: 'node:11.15.0'
+  entrypoint: 'yarn'
   args: ['build']
   dir: 'regex.rip'
-- name 'gcr.io/cloud-builders/gsutil'
+# Build the container image
+- name: 'gcr.io/cloud-builders/gsutil'
   args: ['cp', '-r', '.', 'gs://regex.rip']
   dir: 'regex.rip/build'
 # Build the container image
@@ -22,4 +27,4 @@ steps:
   args: ['beta', 'run', 'deploy', 'api-regex-rip', '--image', 'gcr.io/regex-rip/rxxr2', '--region', 'us-central1', '--platform', 'managed', '--allow-unauthenticated']
   timeout: 1800s
 images:
-       - gcr.io/regex-rip/rxxr2
+   - gcr.io/regex-rip/rxxr2

@@ -2,7 +2,7 @@ import * as React from 'react'
 import { CheckResult, CheckResultVulnerable, check } from './check.tsx'
 import 'style/index.scss'
 import TextareaAutosize from 'react-textarea-autosize'
-import classNames from 'classNames'
+import classNames from 'classnames'
 
 export default function App () {
   let [input, setInput] = React.useState('')
