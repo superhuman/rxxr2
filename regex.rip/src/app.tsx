@@ -64,7 +64,7 @@ export default function App () {
     'empty': regex === '' || input !== regex,
     'loading': loading,
     'vulnerable': !loading && regex === input && result && result.result === 'vulnerable',
-    'ok': !loading && regex === input && result && result.result === 'ok',
+    'ok': !loading && regex === input && result && result.input && result.result === 'ok',
     'error': !loading && regex === input && error
   })
 
@@ -81,7 +81,7 @@ export default function App () {
          <p>Sorry, something went wrong. Please check your regex and try again.</p>
         </>
       ) : null}
-      { result && result.result === 'ok' ? (
+      { result && result.input && result.result === 'ok' ? (
         <>
           <h3>GREAT</h3>
           <code>{result.input.startsWith('/') ? result.input : '/' + result.input + '/'}</code>
@@ -108,19 +108,20 @@ function renderVulnerable (result: CheckResultVulnerable) {
   // do this unconditionally to work around an rxxr2 bug
   kleeneIndex += 1
 
-  return <>
+  return (<>
     <h3>VULNERABLE</h3>
     <code>
       {regex.slice(0, kleeneIndex)}
       <span className='vulnerable'>{regex.slice(kleeneIndex, kleeneIndex + kleeneLength)}</span>
       {regex.slice(kleeneIndex + kleeneLength)}
     </code>
-    <p>This regular expression is vulnerable to exponential backtracking.<p>
+    <p>This regular expression is vulnerable to exponential backtracking.</p>
     <p>
-    When matching strings of the form <code>^{result.prefix}({result.pumpable})*{result.suffix}$</code>, the time taken for matching to fail will double with each additional <code>{result.pumpable}</code>.
+      When matching strings of the form <code>^{result.prefix}({result.pumpable})*{result.suffix}$</code>, the time taken for matching to fail will double with each additional <code>{result.pumpable}</code>.
     </p>
-
     <p>For example: copy and paste this into a javascript console:</p>
-    <code>({regex}).test({JSON.stringify(result.prefix)} + {JSON.stringify(result.pumpable)}.repeat(25) + {JSON.stringify(result.suffix)})</code>
-  </>
+      <code>
+        ({regex}).test({JSON.stringify(result.prefix)} + {JSON.stringify(result.pumpable)}.repeat(25) + {JSON.stringify(result.suffix)})
+      </code>
+  </>)
 }
