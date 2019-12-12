@@ -1,5 +1,6 @@
 import { expect } from "chai";
-import { NFA, intersectRanges } from "../src/nfa";
+import { NFA  } from "../src/nfa";
+import { intersectRanges } from "../src/range";
 
 const nfa = (string: any) => {
   return (string[0] as string).replace(/\n */g, "\n").replace(/^\n/, "");

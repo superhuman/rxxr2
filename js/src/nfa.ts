@@ -1,100 +1,12 @@
+
+// in general a NFA with ambiguous transitions can go from 
+// p : "a" -> q_0 .... q_n 
+// where the result is not a single state, but a set of states.
+
 import { RegExpParser, BaseRegExpVisitor } from "regexp-to-ast";
 import * as types from "regexp-to-ast";
 import { Stringifier } from "./stringifier";
-
-type Range = { from: number; to: number };
-type Ranges = Range[];
-
-export function intersectRanges(a: Ranges, b: Ranges): Ranges {
-  let a_i = 0;
-  let b_i = 0;
-  let output: Ranges = [];
-
-  while (a_i < a.length && b_i < b.length) {
-    if (a[a_i].from < b[b_i].from) {
-      let [t, t_i] = [a, a_i];
-      a = b;
-      a_i = b_i;
-      b = t;
-      b_i = t_i;
-    }
-
-    // a[a_i].from >= b[b_i].from
-    while (a[a_i].from > b[b_i].to) {
-      b_i += 1;
-      if (b_i >= b.length) {
-        return output;
-      }
-
-      if (a[a_i].from < b[b_i].from) {
-        let [t, t_i] = [a, a_i];
-        a = b;
-        a_i = b_i;
-        b = t;
-        b_i = t_i;
-      }
-    }
-
-    // a[a_i].from >= b[b_i].from && a[a_i].from <= b[b_i].to
-    if (a[a_i].to < b[b_i].to) {
-      output.push({ from: a[a_i].from, to: a[a_i].to });
-      a_i += 1;
-    } else {
-      output.push({ from: a[a_i].from, to: b[b_i].to });
-      b_i += 1;
-    }
-  }
-
-  return output;
-}
-
-export function unionRanges(a: Ranges, b: Ranges): Ranges {
-  return resortRanges(a.concat(b));
-}
-
-export function invertRanges(positiveSets: Ranges): Ranges {
-  let output = [];
-
-  if (positiveSets.length === 0) {
-    output = [{ from: 0, to: 0xffff }];
-  } else {
-    let from = 0;
-
-    for (let i = 0; i < positiveSets.length; i++) {
-      if (positiveSets[i].from > from) {
-        output.push({ from: from, to: positiveSets[i].from - 1 });
-      }
-      from = positiveSets[i].to + 1;
-    }
-
-    if (from <= 0xffff) {
-      output.push({ from: from, to: 0xffff });
-    }
-  }
-
-  return output;
-}
-
-export function resortRanges(sets: Ranges): Ranges {
-  let output = [];
-  // sort and merge character sets to make matching easier
-  let lastSet;
-  sets.sort((a, b) => a.from - b.from);
-  for (let set of sets) {
-    if (output.length === 0) {
-      output.push(set);
-      continue;
-    }
-    let lastSet = output[output.length - 1];
-
-    if (lastSet.to + 1 >= set.from) {
-      lastSet.to = Math.max(lastSet.to, set.to);
-    } else {
-      output.push(set);
-    }
-  }
-  return output;
-}
+import { Range, Ranges, intersectRanges, unionRanges, invertRanges, resortRanges } from "./range"
 
 interface NFACondition {
   toString(): string;
@@ -292,8 +204,6 @@ export class NFA {
 
     let visitor = new NFAConstructor(this);
     visitor.visit(pattern);
-
-    console.log("pre-epsilon", this.summarize());
 
     // Simplify by removing Epsilon transitions
     Object.values(this.states).forEach(state => {
