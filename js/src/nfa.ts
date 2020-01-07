@@ -325,8 +325,9 @@ export class NFA {
     } = { states: { 0: [0] }, transitions: [] };
   }
 
-  pumpable() {
+  pumpable(): boolean | string {
     let states = this.decisionPoints();
+    let result = false
 
     for (let state of states) {
       let seen = {};
@@ -335,16 +336,66 @@ export class NFA {
         let str = this.findTwoPathsTo(state.id, this.states[state.id], this.states[state.id], seen, "");
         if (str != null) {
           console.log("PUMPABLE: " + state.id + ": " + str);
-          let prefix = state.id === 0 ? "" : this.findPathTo(state.id, [0], "");
-          let suffix = state.accepting ? undefined : this.findPathToFail([state.id], "");
-          if (str != null && prefix != null && suffix != null) {
-            console.log("VULNERABLE: " + state.id + ": " + prefix + "(" + str + ")*" + suffix);
+          let layers = this.buildRunLayersInternal(this.states[0], '')
+          let prefix = null
+          for (let layer of layers) {
+            if (layer.states.includes(state.id)) {
+              let a = false
+              for (let id of layer.states) {
+                if (this.states[id].accepting)
+                  a = true
+                if (id === state.id)
+                  break
+              }
+              if (!a) {
+                prefix = prefix !== null && prefix.length < layer.input.length ? prefix : layer.input
+              }
+            }
           }
-          return true;
+          if (prefix !== null) {
+            console.log('vulnerable', state.id, 'with prefix', JSON.stringify(prefix), 'str', JSON.stringify(str))
+            let accepting = false
+            let states = this.runMatch(prefix)
+            console.log(states)
+            for (let s of states) {
+              if (this.states[s].accepting) {
+                accepting = true
+              }
+              if (s === state.id) {
+                break
+              }
+            }
+
+            let suffix = accepting ? undefined : this.findPathToFail([state.id], "");
+            if (str != null && prefix != null && suffix != null) {
+              return "VULNERABLE: " + state.id + ": " + prefix + "(" + str + ")*" + suffix
+            }
+          }
+          result = true
         }
       }
     }
-    return false;
+    return result;
+  }
+
+  runMatch(input: string): number[] {
+    let nextStates = [0]
+    let idx = 0
+    while (idx < input.length) {
+      let states = nextStates
+      nextStates = []
+      for (let s of states) {
+        for (let t of this.states[s].transitions) {
+          if (t.condition.matches(input, idx) > -1) {
+            if (!nextStates.includes(t.to)) {
+              nextStates.push(t.to)
+            }
+          }
+        }
+      }
+      idx += 1
+    }
+    return nextStates
   }
 
   findPathTo(destination: number, path: number[], input: string): string | undefined {
@@ -419,6 +470,108 @@ export class NFA {
         }
       }
     }
+  }
+
+  allInterestingCharacters(ranges: Ranges): string[] {
+    let output: string[] = []
+    let seen: {[string: string]: boolean} = {}
+    let add = (c: number) => {
+      let s = String.fromCharCode(c)
+      if (!seen[s]) {
+        seen[s] = true
+        output.push(s)
+      }
+    }
+
+    for (let i = 0; i < ranges.length; i++) {
+      add(ranges[i].from - 1)
+      add(ranges[i].from)
+      add(ranges[i].to)
+      add(ranges[i].to + 1)
+    }
+
+    output.sort()
+    return output
+  }
+
+  buildRunLayers() {
+    return this.buildRunLayersInternal(this.states[0], '')
+  }
+
+  buildRunLayersInternal(state: NFAState, input: string): any {
+    console.log('buildRunLayersInternal')
+    console.log(this.summarize())
+
+    let found : {[key: string]: {input: string, states: number[], accepting: boolean}} = {[state.id]: {
+      input: input,
+      states: [state.id],
+      accepting: state.accepting
+    }}
+    let toSearch = [found[state.id]]
+    let count = 0
+
+    while (toSearch.length) {
+      if (count++ > 10000) {
+        throw new Error('too long...')
+      }
+
+      let {input, states, accepting} = toSearch.shift()!
+
+      let transitionsByNextCharacter : {[string: string]: NFATransition} = {}
+
+      let ranges = states.flatMap((s) => this.states[s].transitions.flatMap((x) => x.condition.generateRanges(input)))
+      let characters = this.allInterestingCharacters(ranges)
+
+      for (let c of characters) {
+        let newMultiState: number[] = []
+        let accepting = false
+        for (let s of states) {
+          let state = this.states[s]
+          for (let t of state.transitions) {
+            if (t.condition.matches(input + c, input.length) > -1) {
+              if (!newMultiState.includes(t.to)) {
+                newMultiState.push(t.to)
+
+                if (this.states[t.to].accepting) {
+                  accepting = true
+                }
+              }
+            }
+          }
+        }
+        let key = newMultiState.join('-')
+        if (key && !found[key]) {
+          found[key] = {
+            input: input + c,
+            states: newMultiState,
+            accepting: accepting
+          }
+          toSearch.push(found[key])
+        }
+      }
+    }
+    return Object.values(found)
+  }
+
+  checkAcceptance(states: number[], input: string, idx: number): boolean {
+    let nextStates = states
+    while (idx < input.length) {
+      states = nextStates
+      nextStates = []
+
+      for (let stateId of states) {
+        let state = this.states[stateId]
+        for (let transition of state.transitions) {
+          if (transition.condition.matches(input, idx)) {
+            if (this.states[transition.to].accepting) {
+              return true
+            }
+            nextStates.push(transition.to)
+          }
+        }
+      }
+    }
+    return false
   }
 
   findPathToFail(path: number[], input: string): string | undefined {
@@ -577,23 +730,23 @@ class NFAConstructor {
         break;
 
       case "EndAnchor":
-        this.nfa.addTransition(from, Epsilon, to);
+        this.nfa.addTransition(from, EndAnchor, to);
 
         break;
       case "StartAnchor":
-        this.nfa.addTransition(from, Epsilon, to);
+        this.nfa.addTransition(from, StartAnchor, to);
         break;
 
       case "WordBoundary":
-        this.nfa.addTransition(from, Epsilon, to);
+        this.nfa.addTransition(from, WordBoundary, to);
         break;
 
       case "NonWordBoundary":
-        this.nfa.addTransition(from, Epsilon, to);
+        this.nfa.addTransition(from, NonWordBoundary, to);
         break;
 
       case "GroupBackReference":
-        this.nfa.addTransition(from, Epsilon, to);
+        this.nfa.addTransition(from, GroupBackReference, to);
         break;
 
       default:
@@ -634,6 +787,7 @@ class NFAConstructor {
 
     let finalStates = [from];
     while (atMost > 0) {
+      atMost = 1 // TODO: remove
       let nextState = this.nfa.newState();
       connector(from, nextState);
       finalStates.push(nextState);

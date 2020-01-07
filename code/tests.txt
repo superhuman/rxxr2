@@ -33,6 +33,3 @@
 
 # Unroll selective
 /(ab|a*b|aab.*)*$/
-
-# lexing error
-\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))
