@@ -1,3 +1,5 @@
+@import './shared.scss';
+
 /* https://alligator.io/css/minimal-css-reset/ */
 html {
   box-sizing: border-box;
@@ -14,9 +16,27 @@ body, h1, h2, h3, h4, h5, h6, p, ol, ul {
 }
 /* end */
 
+/* Begin Utility Styles */
+.flex {
+  display: flex;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.mt0 {
+  margin: 0px;
+}
+/* End Utility Styles */
+
 @font-face {
   font-family: 'Superhuman Operator';
-  src: url('./OperatorMono-Medium.otf');
+  src: url('./OperatorMono-Book.otf');
 }
 
 @font-face {
@@ -30,126 +50,26 @@ body, h1, h2, h3, h4, h5, h6, p, ol, ul {
   src: url('./AdelleSans-SemiBold.otf');
 }
 
+html, body, #root {
+  height: 100%;
+}
+
 body {
-  background: #1b1b1b;
+  background: #18191A;
   font-family: 'Superhuman Adelle';
-}
+  font-size: 14px;
+  line-height: 24px;
 
-#root {
-  max-width: calc(100vw - 50px);
-  height: 100vh;
-  width: 800px;
-  margin: auto;
-  padding: 50px;
-  background: #2b2b2f;
-  box-shadow: 0px 0px 23px 10px rgba(0,0,0,0.75);
-  display: flex;
-  flex-direction: column;
-}
-
-textarea {
-  resize: none;
-  font-family: "Superhuman Operator", monospace;
-  width: 100%;
-  height: 42px;
-
-  line-height: 18px;
-  font-size: 16px;
-  letter-spacing: 0.05em;
-
-  background: #121212;
+  letter-spacing: 0.06px;
   color: rgba(255, 255, 255, 0.9);
-  padding: 12px;
-  border: none;
-  box-shadow: inset 1px 1px 3px 2px rgba(0,0,0,0.5);
-
-  &:focus {
-    outline: none;
-  }
-}
-.input {
-  width: 100%;
-  margin: 30px auto 0px auto;
-  height: auto;
-
-  .progress {
-    display: block;
-    width: 100%;
-    height: 2px;
-    background: rgba(255,255,255,0.75);
-    transition: width .3s;
-    margin-top: -6px;
-  }
-
-  &.empty .progress {
-    width: 0;
-  }
-
-  &.empty textarea:focus + .progress {
-    width: 100%;
-  }
-
-  &.loading .progress {
-    background: linear-gradient(60deg,
-      #f79533, #f37055, #ef4e7b, #a166ab,
-      #5073b8, #1098ad, #07b39b, #6fba82,
-      #f79533, #f37055, #ef4e7b, #a166ab
-      );
-    background-size: 300%;
-    transition: background .1s;
-    animation: animatedgradient 2s linear infinite;
-  }
-
-
-  &.error .progress {
-    background: rgba(226, 134, 134, 1);
-  }
-
-  &.error .progress {
-    background: #f26767;
-  }
-
-  &.ok .progress {
-    background: #a1f267;
-  }
-
-  &.vulnerable .progress {
-    background: #d25a15;
-  }
-}
-
-h1 {
-  color: white;
-
-}
-
-h3 {
-  margin-top: 30px;
-  font-weight: bold;
-  color: rgba(255,255,255,0.9);
-}
-
-code {
-  font-family: 'Superhuman Operator', monospace;
-  color: rgba(255, 255, 255, 0.9);
-  word-break: break-all;
-
-  .vulnerable {
-    color: #d25a15;
-  }
 }
 
 p {
-  margin-top: 12px;
-  color: rgba(255, 255, 255, 0.8);
-}
-
-hr {
-  margin-top: 50px;
+  margin-top: 8px;
 }
 
 a {
-  color: #54acdc;
+  color: #36A0DA;
   text-decoration: none;
 }
 
@@ -157,11 +77,107 @@ a:hover{
   text-decoration: underline;
 }
 
-@keyframes animatedgradient {
-	0% {
-		background-position: 100% 50%;
-	}
-	100% {
-		background-position: 0% 50%;
-	}
+small {
+  display: block;
+  font-size: 12px;
+  line-height: 15px;
+  letter-spacing: 0.06px;
+  color: rgb(174, 175, 176);
+}
+
+code {
+  font-family: 'Superhuman Operator', monospace;
+  font-style: normal;
+  font-weight: normal;
+  word-break: break-all;
+
+  .vulnerable {
+    color: $vulnerable-color;
+  }
+}
+
+hr {
+  border: 0px solid #48494D;
+  border-top-width: 1px;
+  margin-top: $unit * 5;
+  margin-bottom: 26px;
+}
+
+#root {
+  max-width: calc(100vw - 50px);
+  width: 996px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.body, .footer {
+  background: #27292D;
+}
+
+.body {
+  flex: 1 1 auto;
+  padding-top: 38px;
+}
+
+.footer {
+  padding-bottom: $unit * 6;
+}
+
+.text-block {
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+.input-block {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.result-container {
+  margin-top: 26px;
+}
+
+.line-break {
+  margin-top: $unit * 5;
+}
+
+.small-line-break {
+  margin-top: 15px;
+}
+
+.footer-text {
+  max-width: 600px;
+}
+
+.instruction-text {
+  margin-top: 32px;
+}
+
+.vulnerable-regex {
+  font-size: 16px;
+}
+
+@include not-small-device {
+  body {
+    font-size: 16px;
+  }
+
+  .body {
+    padding-top: $unit * 14;
+  }
+
+  .instruction-text {
+    margin-top: 85px;
+  }
+
+  .text-block {
+    padding-left: 100px;
+    padding-right: 100px;
+  }
+
+  .input-block {
+    padding-left: 78px;
+    padding-right: 78px;
+  }
 }

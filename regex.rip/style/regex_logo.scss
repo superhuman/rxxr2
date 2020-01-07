@@ -1,0 +1,12 @@
+@import './shared.scss';
+
+.RegexLogo {
+  display: block;
+  width: 180px;
+}
+
+@include not-small-device {
+  .RegexLogo {
+    width: 256px;
+  }
+}
