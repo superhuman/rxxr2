@@ -1,0 +1,11 @@
+$unit: 6px;
+$error-color: #F67B7B;
+$ok-color: #6EBD77;
+$vulnerable-color: #FFCB33;
+$focused-color: #A0A4D9;
+
+@mixin not-small-device {
+  @media (min-width: 30em) {
+    @content;
+  }
+}
