@@ -14,7 +14,6 @@ export default function App () {
   let [error, setError] = React.useState<Error | null>(null)
   let [result, setResult] = React.useState<CheckResult | null>(null)
   let [isFocused, setFocus] = React.useState(false)
-  let inputRef = React.useRef<HTMLTextAreaElement | null>(null)
 
   React.useEffect(() => {
     (async () => {
@@ -33,7 +32,6 @@ export default function App () {
         if (regex !== regexWas) {
           return
         }
-        if (inputRef.current) inputRef.current.blur()
         setLoading(false)
         setError(null)
         setResult(newResult)
@@ -41,7 +39,6 @@ export default function App () {
         if (regex !== regexWas) {
           return
         }
-        if (inputRef.current) inputRef.current.blur()
         setLoading(false)
         setError(e)
         setResult(null)
@@ -69,14 +66,16 @@ export default function App () {
 
   let inputStatus
 
-  if (regex === input && error) {
-    inputStatus = 'error'
-  } else if (regex === input && result && result.result === 'vulnerable') {
-    inputStatus = 'vulnerable'
-  } else if (regex === input && result && result.input && result.result === 'ok') {
-    inputStatus = 'ok'
-  } else if (isFocused) {
-    inputStatus = 'focused'
+  if (isFocused) {
+    if (regex === input && error) {
+      inputStatus = 'error'
+    } else if (regex === input && result && result.result === 'vulnerable') {
+      inputStatus = 'vulnerable'
+    } else if (regex === input && result && result.input && result.result === 'ok') {
+      inputStatus = 'ok'
+    } else {
+      inputStatus = 'focused'
+    }
   }
 
   return <>
@@ -95,7 +94,6 @@ export default function App () {
           onFocus={() => setFocus(true)}
           onBlur={() => setFocus(false)}
           onKeyDown={handleKeyDown}
-          inputRef={(ref) => inputRef.current = ref}
         />
       </div>
       <div className="text-block result-container">

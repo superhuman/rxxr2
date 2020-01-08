@@ -10,7 +10,6 @@ type RegexInputProps = {
   onKeyDown: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void,
   onFocus: (e: React.FocusEvent<HTMLTextAreaElement>) => void,
   onBlur: (e: React.FocusEvent<HTMLTextAreaElement>) => void,
-  inputRef: (node: HTMLTextAreaElement) => void,
   loading: boolean,
   status: string | undefined
 }
@@ -20,7 +19,7 @@ let timeoutId: undefined | number
 function RegexInput ({
   value, placeholder, onChange,
   onKeyDown, loading, status,
-  onFocus, onBlur, inputRef
+  onFocus, onBlur
 }: RegexInputProps) {
   let [displayLoader, setLoaderDisplay] = React.useState(false)
 
@@ -45,7 +44,6 @@ function RegexInput ({
         onKeyDown={onKeyDown}
         onFocus={onFocus}
         onBlur={onBlur}
-        inputRef={inputRef}
         autoFocus
       />
     </div>
