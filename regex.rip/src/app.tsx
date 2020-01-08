@@ -14,6 +14,7 @@ export default function App () {
   let [error, setError] = React.useState<Error | null>(null)
   let [result, setResult] = React.useState<CheckResult | null>(null)
   let [isFocused, setFocus] = React.useState(false)
+  let inputRef = React.useRef<HTMLTextAreaElement | null>(null)
 
   React.useEffect(() => {
     (async () => {
@@ -32,6 +33,7 @@ export default function App () {
         if (regex !== regexWas) {
           return
         }
+        if (inputRef.current) inputRef.current.blur()
         setLoading(false)
         setError(null)
         setResult(newResult)
@@ -39,6 +41,7 @@ export default function App () {
         if (regex !== regexWas) {
           return
         }
+        if (inputRef.current) inputRef.current.blur()
         setLoading(false)
         setError(e)
         setResult(null)
@@ -84,14 +87,15 @@ export default function App () {
       </div>
       <div className='input-block'>
         <RegexInput
+          value={input}
+          placeholder='/(a|b|ab)*c/'
+          onChange={handleChange}
           loading={loading}
           status={inputStatus}
-          value={input}
-          onChange={handleChange}
           onFocus={() => setFocus(true)}
           onBlur={() => setFocus(false)}
-          placeholder='/(a|b|ab)*c/'
           onKeyDown={handleKeyDown}
+          inputRef={(ref) => inputRef.current = ref}
         />
       </div>
       <div className="text-block result-container">
