@@ -20,6 +20,16 @@ module.exports = {
         test: /\.otf$/,
         use: 'url-loader'
       },
+      {
+        test: /\.png$/,
+        use: {
+          loader: 'file-loader',
+          options: {
+            outputPath: 'build',
+            publicPath: '/build'
+          }
+        }
+      },
     ],
   },
   resolve: {

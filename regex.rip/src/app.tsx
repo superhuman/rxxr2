@@ -82,7 +82,7 @@ export default function App () {
     <div className="body">
       <div className="text-block">
         <RegexLogo />
-        <p className="instruction-text">Enter a regular expression to test whether it is vulnerable to <a href='https://medium.com/p/f8983bb76afc'>ReDOS</a>.</p>
+        <p className="instruction-text">Enter a regular expression to test whether it is vulnerable to <a href='https://medium.com/p/f8983bb76afc'>regular expression denial of service</a> (ReDoS).</p>
       </div>
       <div className='input-block'>
         <RegexInput

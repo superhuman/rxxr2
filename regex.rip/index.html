@@ -1,8 +1,38 @@
 <!doctype html>
 <html>
   <head>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Regex tester</title>
+    <link rel="icon" type="image/png" href="${require('./favicon.png').default}">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="regex.rip">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://regex.rip/">
+    <meta property="og:image" content="${require('./share-image.png').default}">
+    <meta property="og:description" content="regex.rip 💀  — eliminate regular expression denial of service (ReDoS)">
+    <meta property="og:site_name" content="regex.rip">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@ConradIrwin">
+    <meta name="twitter:creator" content="@ConradIrwin">
+    <meta name="twitter:title" content="regex.rip">
+    <meta name="twitter:description" content="regex.rip 💀  — eliminate regular expression denial of service (ReDoS)">
+    <!--  IMPORTANT: THIS MUST BE AN ABSOLUTE URL FOR THE TWITTER ICON TO WORK -->
+    <meta name="twitter:image" content="${require('./share-image.png').default}">
+    <meta name="twitter:url" content="https://regex.rip/">
+
+    <title>regex.rip 💀  — eliminate regular expression denial of service (ReDoS)</title>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-60755253-3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-60755253-3');
+    </script>
   </head>
   <body>
     <div id="root"></div>
