@@ -16,7 +16,7 @@ let make_line_reader fname =
       None
     else
       try
-        Some (Scanf.bscanf (Scanf.Scanning.from_channel in_channel) "%[^\r\n]\n" (fun x -> x))
+        Some (Scanf.fscanf in_channel "%[^\r\n]\n" (fun x -> x))
       with
         End_of_file ->
           close_in_noerr in_channel;
