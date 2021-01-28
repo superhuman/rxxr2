@@ -21,7 +21,7 @@ type CheckResultError = {
 export type CheckResult = CheckResultOK | CheckResultVulnerable
 
 export async function check (regex: string): Promise<CheckResult> {
-  let response = await fetch('https://api.regex.rip/check', {
+  let response = await fetch('https://go.regex.rip/check', {
     method: 'POST',
     body: JSON.stringify({
       regexes: [regex]
