@@ -1,7 +1,7 @@
 {
   "name": "rxxr2",
   "version": "1.0.0",
-  "description": "A javascript port or rxxr2",
+  "description": "A javascript port of rxxr2",
   "main": "index.js",
   "repository": "https://github.com/superhuman/rxxr2",
   "author": "Conrad Irwin <conrad@superhuman.com>",
